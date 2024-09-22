@@ -1,27 +1,18 @@
-import Vue from 'vue';
-import Router from 'vue-router';
-import Register from '../components/UserRegister.vue';
-import Login from '../components/UserLogin.vue';
-import AdminPanel from '../components/AdminPanel.vue';
-import { auth } from '../firebaseConfig';
+import { createRouter, createWebHistory } from 'vue-router'
 
-Vue.use(Router); // Убедитесь, что VueRouter используется правильно
-
-const router = new Router({
+const router = createRouter({
+  history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
-    { path: '/register', component: Register },
-    { path: '/login', component: Login },
-    { path: '/admin', component: AdminPanel, meta: { requiresAuth: true } }
+    {
+      path: '/',
+      name: "Home",
+      component: () => import('../views/Home.vue')
+    }, {
+      path: '/post/:id',
+      name: "Post",
+      component: () => import('../views/Post.vue')
+    }
   ]
-});
+})
 
-router.beforeEach((to, from, next) => {
-  const user = auth.currentUser;
-  if (to.matched.some(record => record.meta.requiresAuth) && !user) {
-    next('/login');
-  } else {
-    next();
-  }
-});
-
-export default router;
+export default router
